@@ -10,7 +10,15 @@
 
 <form action="/" method="post">
     <div class="input-group">
-        <input type="text" id="name" />
+        <input
+            type="text"
+            id="name"
+            data-validate="true"
+            data-validate-error-element="#errors"
+            data-validate-debounce="500"
+            data-validate-empty-message="This field has to be filled."
+            data-validate-minlength="4"
+            data-validate-minlength-message="Please enter at least 5 characters."/>
         <label for="name">Name</label>
     </div>
     <div class="input-group">
@@ -19,6 +27,8 @@
     </div>
     <button type="submit">Submit</button>
 </form>
+
+<div id="errors"></div>
 
 </body>
 </html>
