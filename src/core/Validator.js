@@ -98,8 +98,6 @@ export default class Validator {
                 : messages;
         }, []);
 
-        console.log(messages);
-
         const isValid = messages.length === 0;
 
         if (!isValid) {
