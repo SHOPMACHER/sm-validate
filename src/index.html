@@ -4,31 +4,89 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #efefef;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 16px;
+            width: 300px;
+        }
+
+        .input {
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-size: 16px;
+            padding: 4px 8px;
+            outline: none;
+        }
+
+        button {
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-size: 16px;
+            padding: 8px 16px;
+            background-color: #11223D;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #22334E;
+        }
+    </style>
+
     <title>sm-validate | Demo</title>
 </head>
 <body>
 
 <form action="/" method="post">
     <div class="input-group">
+        <label for="name">Min. 5 characters</label>
         <input
+            class="input"
             type="text"
             id="name"
             data-validate="true"
-            data-validate-error-element="#errors"
+            data-validate-error-element="#min-error"
             data-validate-debounce="500"
-            data-validate-empty-message="This field has to be filled."
-            data-validate-minlength="4"
+            data-validate-minlength="5"
             data-validate-minlength-message="Please enter at least 5 characters."/>
-        <label for="name">Name</label>
+        <div id="min-error"></div>
     </div>
     <div class="input-group">
-        <input type="text" id="street" />
-        <label for="street">Street</label>
+        <label for="street">Not empty</label>
+        <input
+            class="input"
+            type="text"
+            id="street"
+            data-validate="true"
+            data-validate-debounce="500"
+            data-validate-empty-message="Please fill out this field."
+            data-validate-error-element="#empty-error"/>
+        <div id="empty-error"></div>
+    </div>
+    <div class="input-group">
+        <label for="age">Number</label>
+        <input
+            class="input"
+            type="text"
+            id="age"
+            data-validate="true"
+            data-validate-debounce="500"
+            data-validate-type="number"
+            data-validate-type-message="Please enter a valid number."
+            data-validate-error-element="#type-error"/>
+        <div id="type-error"></div>
     </div>
     <button type="submit">Submit</button>
 </form>
-
-<div id="errors"></div>
 
 </body>
 </html>

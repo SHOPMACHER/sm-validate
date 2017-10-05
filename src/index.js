@@ -1,6 +1,8 @@
 import Validator from './core/Validator';
 import './styles/main.less';
 
-Validator.init();
+if (process.env.NODE_ENV === 'development') {
+    Validator.init();
+}
 
 export default Validator;

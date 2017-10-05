@@ -20,6 +20,10 @@ export default class Validator {
             validateEmptyMessage,
             validateMinlength,
             validateMinlengthMessage,
+            validateMaxlength,
+            validateMaxlengthMessage,
+            validateType,
+            validateTypeMessage,
             validateDebounce,
             validateMessageCount,
             validateErrorElement
@@ -32,6 +36,14 @@ export default class Validator {
             minLength: {
                 value: validateMinlength,
                 message: validateMinlengthMessage
+            },
+            maxLength: {
+                value: validateMaxlength,
+                message: validateMaxlengthMessage
+            },
+            type: {
+                value: validateType,
+                message: validateTypeMessage
             },
             trigger: {
                 debounce: parseInt(validateDebounce, 10)
@@ -48,15 +60,18 @@ export default class Validator {
 
         // debounce trigger
         if (this.options.trigger.debounce) {
-            this.validate = debounce(this.validate, this.options.trigger.debounce);
-            this.$ref.addEventListener('keyup', this.validate);
+            this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
+            this.$ref.addEventListener('keyup', this.validateDebounced);
+            this.$ref.addEventListener('blur', this.validate);
         }
     }
 
     createValidators = () => {
         const {
             minLength,
-            empty
+            maxLength,
+            empty,
+            type
         } = this.options;
 
         if (empty.message) {
@@ -65,6 +80,14 @@ export default class Validator {
 
         if (minLength && minLength.value) {
             this.activeValidators.push(validators.minLength(this.$ref, minLength));
+        }
+
+        if (maxLength && maxLength.value) {
+            this.activeValidators.push(validators.maxLength(this.$ref, maxLength));
+        }
+
+        if (type && type.value) {
+            this.activeValidators.push(validators.dataType(this.$ref, type));
         }
     };
 
