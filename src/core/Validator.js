@@ -98,7 +98,11 @@ export default class Validator {
                 : messages;
         }, []);
 
-        if (messages.length) {
+        console.log(messages);
+
+        const isValid = messages.length === 0;
+
+        if (!isValid) {
             this.$ref.classList.add('sm-validate-error');
         } else {
             this.$ref.classList.remove('sm-validate-error');
@@ -107,6 +111,8 @@ export default class Validator {
         if (this.$errorRef) {
             this.$errorRef.innerHTML = `<div>${messages.join('</div><div>')}</div>`;
         }
+
+        return isValid;
     };
 
     /**
@@ -114,11 +120,27 @@ export default class Validator {
      *
      * @static
      *
-     * @returns {*}
+     * @returns {*} Array of validators
      */
     static init() {
         const $inputs = document.querySelectorAll('[data-validate="true"]');
         return Array.prototype.map.call($inputs, $input => new Validator($input));
+    }
+
+    /**
+     * Attaches an array of validators to a form and validates on submit.
+     * If the validation fails, the form's submit is prevented.
+     *
+     * @param $form
+     * @param validators
+     */
+    static attachToForm($form, validators) {
+        $form.addEventListener('submit', (event) => {
+            const result = validators.map(validator => validator.validate());
+            if (result.some(isValid => !isValid)) {
+                event.preventDefault();
+            }
+        });
     }
 
 }
