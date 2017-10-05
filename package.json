@@ -2,9 +2,13 @@
   "name": "@shopmacher/validate",
   "version": "0.1.0",
   "description": "JavaScript form validation library",
-  "main": "src/index.js",
+  "main": "lib/validate.js",
+  "jsnext:main": "lib/validate.js",
+  "module": "lib/validate.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack/dev.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack/prod.js",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -18,10 +22,24 @@
     "errors",
     "messages"
   ],
-  "author": "Rico Herwig",
+  "author": {
+    "name": "Rico Herwig",
+    "email": "r.herwig@shopmacher.de"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/SHOPMACHER/sm-validate/issues"
   },
-  "homepage": "https://github.com/SHOPMACHER/sm-validate#readme"
+  "homepage": "https://github.com/SHOPMACHER/sm-validate#readme",
+  "devDependencies": {
+    "css-hot-loader": "^1.3.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.1",
+    "html-webpack-plugin": "^2.30.1",
+    "less-loader": "^4.0.5",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1",
+    "webpack-merge": "^4.1.0"
+  }
 }
