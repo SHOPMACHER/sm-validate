@@ -26,6 +26,7 @@ export default class Validator {
             validateTypeMessage,
             validateDebounce,
             validateMessageCount,
+            validateErrorMessage,
             validateErrorElement
         } = this.$ref.dataset;
 
@@ -46,8 +47,9 @@ export default class Validator {
                 message: validateTypeMessage
             },
             trigger: {
-                debounce: parseInt(validateDebounce, 10)
+                debounce: validateDebounce ? parseInt(validateDebounce, 10) : 300
             },
+            errorMessage: validateErrorMessage,
             messageCount: validateMessageCount
         };
 
@@ -59,11 +61,9 @@ export default class Validator {
         this.createValidators();
 
         // debounce trigger
-        if (this.options.trigger.debounce) {
-            this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
-            this.$ref.addEventListener('keyup', this.validateDebounced);
-            this.$ref.addEventListener('blur', this.validate);
-        }
+        this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
+        this.$ref.addEventListener('keyup', this.validateDebounced);
+        this.$ref.addEventListener('blur', this.validate);
     }
 
     createValidators = () => {
@@ -93,7 +93,9 @@ export default class Validator {
 
     validate = () => {
         const messages = this.activeValidators.reduce((messages, validator) => {
-            return !validator.isValid() ? messages.concat(validator.message) : messages;
+            return !validator.isValid()
+                ? messages.concat(validator.message || this.options.errorMessage)
+                : messages;
         }, []);
 
         if (messages.length) {
