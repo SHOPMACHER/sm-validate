@@ -1,5 +1,5 @@
 {
-  "name": "validate",
+  "name": "@shopmacher/validate",
   "version": "0.1.0",
   "description": "JavaScript form validation library",
   "main": "src/index.js",
