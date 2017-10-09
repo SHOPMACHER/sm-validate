@@ -103,13 +103,18 @@ export default class Validator {
     };
 
     validate = () => {
-        const messages = this.activeValidators.reduce((messages, validator) => {
+        let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
             return !validator.isValid() && !messages.includes(message)
                 ? messages.concat(message)
                 : messages;
         }, []);
+
+        const emptyMessageIndex = messages.indexOf(this.options.empty.message);
+        if (emptyMessageIndex > -1) {
+            messages = [messages[emptyMessageIndex]];
+        }
 
         const isValid = messages.length === 0;
 
@@ -127,7 +132,7 @@ export default class Validator {
     };
 
     /**
-     * Intializes all inputs having the `data-sm-validate` attribute set to `true`.
+     * Intializes all inputs having the `data-validate` attribute set to `true`.
      *
      * @static
      *
