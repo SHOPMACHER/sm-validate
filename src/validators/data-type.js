@@ -8,6 +8,8 @@ export default ($input, { value, message }) => ({
                 return typeof number === 'number' && !isNaN(number);
             case 'text':
                 return typeof inputValue === 'string';
+            case 'email':
+                return /.+@.+\..{2,}/i.test(inputValue);
             default:
                 return false;
         }

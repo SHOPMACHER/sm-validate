@@ -24,9 +24,11 @@ export default class Validator {
             validateMaxlengthMessage,
             validateType,
             validateTypeMessage,
+            validateRegex,
+            validateRegexMessage,
             validateDebounce,
             validateMessageCount,
-            validateErrorMessage,
+            validateInvalidMessage,
             validateErrorElement
         } = this.$ref.dataset;
 
@@ -46,10 +48,14 @@ export default class Validator {
                 value: validateType,
                 message: validateTypeMessage
             },
+            regex: {
+                value: validateRegex,
+                message: validateRegexMessage
+            },
             trigger: {
                 debounce: validateDebounce ? parseInt(validateDebounce, 10) : 300
             },
-            errorMessage: validateErrorMessage,
+            invalidMessage: validateInvalidMessage,
             messageCount: validateMessageCount
         };
 
@@ -71,7 +77,8 @@ export default class Validator {
             minLength,
             maxLength,
             empty,
-            type
+            type,
+            regex
         } = this.options;
 
         if (empty.message) {
@@ -89,12 +96,16 @@ export default class Validator {
         if (type && type.value) {
             this.activeValidators.push(validators.dataType(this.$ref, type));
         }
+
+        if (regex && regex.value) {
+            this.activeValidators.push(validators.regex(this.$ref, regex));
+        }
     };
 
     validate = () => {
         const messages = this.activeValidators.reduce((messages, validator) => {
             return !validator.isValid()
-                ? messages.concat(validator.message || this.options.errorMessage)
+                ? messages.concat(validator.message || this.options.invalidMessage)
                 : messages;
         }, []);
 
@@ -107,7 +118,7 @@ export default class Validator {
         }
 
         if (this.$errorRef) {
-            this.$errorRef.innerHTML = `<div>${messages.join('</div><div>')}</div>`;
+            this.$errorRef.innerHTML = messages.join('<br/>');
         }
 
         return isValid;
