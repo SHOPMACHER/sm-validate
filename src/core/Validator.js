@@ -9,7 +9,7 @@ export default class Validator {
     options = {};
     activeValidators = [];
 
-    constructor($ref) {
+    constructor($ref, customValidators = []) {
         this.$ref = $ref;
 
         if (!this.$ref) {
@@ -50,6 +50,9 @@ export default class Validator {
             this.register(validator);
         });
 
+        // add custom validators
+        customValidators.forEach(this.register);
+
         // debounce trigger
         this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
 
@@ -74,7 +77,7 @@ export default class Validator {
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
-            return !validator.isValid() && !messages.indexOf(message) > -1
+            return !validator.isValid() && !messages.indexOf(message) > -1 && !!message
                 ? messages.concat(message)
                 : messages;
         }, []);
@@ -106,9 +109,9 @@ export default class Validator {
      *
      * @returns {*} Array of validators
      */
-    static init() {
+    static init(customValidators = []) {
         const $inputs = document.querySelectorAll('[data-validate="true"]');
-        return Array.prototype.map.call($inputs, $input => new Validator($input));
+        return Array.prototype.map.call($inputs, $input => new Validator($input, customValidators));
     }
 
     /**
