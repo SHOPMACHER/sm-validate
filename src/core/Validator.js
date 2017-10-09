@@ -26,6 +26,8 @@ export default class Validator {
             validateTypeMessage,
             validateRegex,
             validateRegexMessage,
+            validateChecked,
+            validateCheckedMessage,
             validateDebounce,
             validateMessageCount,
             validateInvalidMessage,
@@ -52,6 +54,10 @@ export default class Validator {
                 value: validateRegex,
                 message: validateRegexMessage
             },
+            checked: {
+                value: validateChecked,
+                message: validateCheckedMessage
+            },
             trigger: {
                 debounce: validateDebounce ? parseInt(validateDebounce, 10) : 300
             },
@@ -68,8 +74,15 @@ export default class Validator {
 
         // debounce trigger
         this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
-        this.$ref.addEventListener('keyup', this.validateDebounced);
-        this.$ref.addEventListener('blur', this.validate);
+
+        switch (this.$ref.type) {
+            case 'checkbox':
+                this.$ref.addEventListener('change', this.validate);
+                break;
+            default:
+                this.$ref.addEventListener('keyup', this.validateDebounced);
+                this.$ref.addEventListener('blur', this.validate);
+        }
     }
 
     createValidators = () => {
@@ -78,7 +91,8 @@ export default class Validator {
             maxLength,
             empty,
             type,
-            regex
+            regex,
+            checked
         } = this.options;
 
         if (empty.message) {
@@ -99,6 +113,10 @@ export default class Validator {
 
         if (regex && regex.value) {
             this.activeValidators.push(validators.regex(this.$ref, regex));
+        }
+
+        if (checked && checked.value) {
+            this.activeValidators.push(validators.checked(this.$ref, checked));
         }
     };
 
