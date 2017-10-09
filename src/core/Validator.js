@@ -18,16 +18,6 @@ export default class Validator {
 
         const {
             validateEmptyMessage,
-            validateMinlength,
-            validateMinlengthMessage,
-            validateMaxlength,
-            validateMaxlengthMessage,
-            validateType,
-            validateTypeMessage,
-            validateRegex,
-            validateRegexMessage,
-            validateChecked,
-            validateCheckedMessage,
             validateDebounce,
             validateMessageCount,
             validateInvalidMessage,
@@ -37,26 +27,6 @@ export default class Validator {
         this.options = {
             empty: {
                 message: validateEmptyMessage
-            },
-            minLength: {
-                value: validateMinlength,
-                message: validateMinlengthMessage
-            },
-            maxLength: {
-                value: validateMaxlength,
-                message: validateMaxlengthMessage
-            },
-            type: {
-                value: validateType,
-                message: validateTypeMessage
-            },
-            regex: {
-                value: validateRegex,
-                message: validateRegexMessage
-            },
-            checked: {
-                value: validateChecked,
-                message: validateCheckedMessage
             },
             trigger: {
                 debounce: validateDebounce ? parseInt(validateDebounce, 10) : 300
@@ -70,7 +40,15 @@ export default class Validator {
         }
 
         // add validators
-        this.createValidators();
+        Object.keys(validators).forEach(name => {
+            const validator = validators[name];
+
+            if (!validator.attr) {
+                return;
+            }
+
+            this.register(validator);
+        });
 
         // debounce trigger
         this.validateDebounced = debounce(this.validate, this.options.trigger.debounce);
@@ -85,46 +63,18 @@ export default class Validator {
         }
     }
 
-    createValidators = () => {
-        const {
-            minLength,
-            maxLength,
-            empty,
-            type,
-            regex,
-            checked
-        } = this.options;
+    register = (validator) => {
+        const value = this.$ref.getAttribute(`data-validate-${validator.attr}`);
+        const message = this.$ref.getAttribute(`data-validate-${validator.attr}-message`);
 
-        if (empty.message) {
-            this.activeValidators.push(validators.empty(this.$ref, empty));
-        }
-
-        if (minLength && minLength.value) {
-            this.activeValidators.push(validators.minLength(this.$ref, minLength));
-        }
-
-        if (maxLength && maxLength.value) {
-            this.activeValidators.push(validators.maxLength(this.$ref, maxLength));
-        }
-
-        if (type && type.value) {
-            this.activeValidators.push(validators.dataType(this.$ref, type));
-        }
-
-        if (regex && regex.value) {
-            this.activeValidators.push(validators.regex(this.$ref, regex));
-        }
-
-        if (checked && checked.value) {
-            this.activeValidators.push(validators.checked(this.$ref, checked));
-        }
+        this.activeValidators.push(validator.create(this.$ref, { value, message }));
     };
 
     validate = () => {
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
-            return !validator.isValid() && !messages.includes(message)
+            return !validator.isValid() && !messages.indexOf(message) > -1
                 ? messages.concat(message)
                 : messages;
         }, []);

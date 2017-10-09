@@ -55,35 +55,9 @@
             id="name"
             data-validate="true"
             data-validate-error-element="#min-error"
-            data-validate-debounce="500"
             data-validate-minlength="5"
             data-validate-minlength-message="Please enter at least 5 characters."/>
         <div id="min-error"></div>
-    </div>
-    <div class="input-group">
-        <label for="street">Not empty</label>
-        <input
-            class="input"
-            type="text"
-            id="street"
-            data-validate="true"
-            data-validate-debounce="500"
-            data-validate-empty-message="Please fill out this field."
-            data-validate-error-element="#empty-error"/>
-        <div id="empty-error"></div>
-    </div>
-    <div class="input-group">
-        <label for="age">Number</label>
-        <input
-            class="input"
-            type="text"
-            id="age"
-            data-validate="true"
-            data-validate-debounce="500"
-            data-validate-type="number"
-            data-validate-type-message="Please enter a valid number."
-            data-validate-error-element="#type-error"/>
-        <div id="type-error"></div>
     </div>
     <button type="submit">Submit</button>
 </form>
