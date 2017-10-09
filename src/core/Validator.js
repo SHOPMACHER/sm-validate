@@ -104,8 +104,10 @@ export default class Validator {
 
     validate = () => {
         const messages = this.activeValidators.reduce((messages, validator) => {
-            return !validator.isValid()
-                ? messages.concat(validator.message || this.options.invalidMessage)
+            const message = validator.message || this.options.invalidMessage;
+
+            return !validator.isValid() && !messages.includes(message)
+                ? messages.concat(message)
                 : messages;
         }, []);
 
