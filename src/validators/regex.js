@@ -1,4 +1,4 @@
 export default ($input, { value, message }) => ({
-    isValid: () =>  new RegExp(value).test($input.value),
+    isValid: () =>  $input.value.length === 0 || new RegExp(value).test($input.value),
     message
 });
