@@ -11,14 +11,12 @@ to write your own.
   * [CommonJS](#commonjs)
   * [ESM](#esm)
 * [Usage](#usage)
-  * [Markup](#markup)
-  * [Global initialization](#globalinitilization)
-  * [Single initilization](#singleinitilization)
-  * [Options](#options)
-  * [Responsiveness](#responsiveness)
-  * [Events](#events)
-    * [Attaching a listener](#attachingalistener)
-    * [Dispatching an event](#dispatchinganevent)
+  * [Initialization](#initialization)
+  * [Validating forms](#validating-forms)
+  * [Configuration](#configuration)
+  * [Attributes](#attributes)
+  * [CSS classes](#css-classes)
+* [Custom validators](#custom-validators)
 * [Todo](#todo)
 * [Contributing](#contributing)
 * [License](#license)
@@ -58,7 +56,7 @@ the `Validate` variable to access its methods.
 Import the slider via `import Validate from '@shopmacher/validate';` and access it
 via the `Validate` variable.
 
-## Basic Usage
+## Usage
 This section describes how to initialise and configure the validator.
 
 ### Initialization
@@ -138,10 +136,66 @@ Whenever a validation failes, the CSS class `sm-validate-error` is added
 to the validated element. This allows you to take control over different styling
 of invalid inputs.
 
+## Custom validators
+In addition to using the predefined validators, you can provide your own.
+
+### Defining a validator
+A validator is a JavaScript function that follows a predetermined
+scheme. A validator to check, if the inputs value is the string `Hello`
+would be implemented like this:
+
+```javascript
+// ECMAScript 2015
+const validator = {
+    attr: 'hello',
+    create: ($input, { value, message }) => ({
+        isValid: () => $input.value === 'Hellow',
+        message
+    })
+};
+```
+
+The property `attr` defines, through which data-attribite the validator
+will be accessible.
+In case of the example above, the data-attribute `data-validate-hello`
+can be attached to the input to use the validator.
+The validation message that is emitted if the validator fails can be
+defined through the use of the attribute `data-validate-hello-message`.
+
+The `create` method returns the instance of the validator that the
+library is going to use.
+
+It receives the following parameters:
+* `$input` - the input field the validator is called upon
+* An object consisting of:
+  * `value` - the value of the input
+  * `message` - the validation message (this is mainly used to pass it through)
+
+The `create` method ifself returns an object consisting of:
+* `isValid` - a function that returns true, if the input is valid
+* `message` - the validation message
+
+### Using a custom validator
+Once defined, the custom validator(s) can be passed to either the static
+`init` function or the class constructor.
+
+```javascript
+const validator = { /* your validator */ };
+
+Validator.init([validator]);
+
+// or
+
+new Validator($element, [validator]);
+```
+
+Note that the validators need to be passed as an array, which means
+that you can pass as many as you want.
+
 ## Todo
 - [x] Implements basic validators
 - [x] Provide methods to plug-in custom validators
-- [ ] Extend documentation to cover custom validators
+- [x] Extend documentation to cover custom validators
 - [ ] Write unit tests
 
 ## Contributing
