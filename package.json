@@ -1,6 +1,6 @@
 {
   "name": "@shopmacher/validate",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "JavaScript form validation library",
   "main": "lib/validate.js",
   "jsnext:main": "lib/validate.js",
