@@ -70,6 +70,10 @@ export default class Validator {
         const value = this.$ref.getAttribute(`data-validate-${validator.attr}`);
         const message = this.$ref.getAttribute(`data-validate-${validator.attr}-message`);
 
+        if (!value && !message) {
+            return;
+        }
+
         this.activeValidators.push(validator.create(this.$ref, { value, message }));
     };
 
@@ -77,12 +81,12 @@ export default class Validator {
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
+            console.log(message, validator.isValid());
+
             return !validator.isValid() && messages.indexOf(message) === -1 && !!message
                 ? messages.concat(message)
                 : messages;
         }, []);
-
-        console.log(messages);
 
         const emptyMessageIndex = messages.indexOf(this.options.empty.message);
         if (emptyMessageIndex > -1) {
