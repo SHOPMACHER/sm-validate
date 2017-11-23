@@ -77,10 +77,12 @@ export default class Validator {
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
-            return !validator.isValid() && !messages.indexOf(message) > -1 && !!message
+            return !validator.isValid() && messages.indexOf(message) === -1 && !!message
                 ? messages.concat(message)
                 : messages;
         }, []);
+
+        console.log(messages);
 
         const emptyMessageIndex = messages.indexOf(this.options.empty.message);
         if (emptyMessageIndex > -1) {
