@@ -109,8 +109,8 @@ export default class Validator {
      *
      * @returns {*} Array of validators
      */
-    static init(customValidators = []) {
-        const $inputs = document.querySelectorAll('[data-validate="true"]');
+    static init(customValidators = [], $root = document) {
+        const $inputs = $root.querySelectorAll('[data-validate="true"]');
         return Array.prototype.map.call($inputs, $input => new Validator($input, customValidators));
     }
 
