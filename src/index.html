@@ -48,15 +48,14 @@
 
 <form action="/" method="post" id="test-form">
     <div class="input-group">
-        <label for="name">Min. 5 characters</label>
         <input
             class="input"
             type="text"
-            id="name"
             data-validate="true"
-            data-validate-error-element="#min-error"
-            data-validate-minlength="5"
-            data-validate-minlength-message="Please enter at least 5 characters."/>
+            data-validate-empty-message="Bitte geben Sie einen <strong>Vornamen</strong> ein."
+            data-validate-minlength="2"
+            data-validate-invalid-message="Ein <strong>Vorname</strong> muss mind. 2 Zeichen lang sein und darf keine Zahlen enthalten."
+            data-validate-error-element="#min-error"/>
         <div id="min-error"></div>
     </div>
     <button type="submit">Submit</button>

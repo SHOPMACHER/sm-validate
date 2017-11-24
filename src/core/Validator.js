@@ -1,6 +1,7 @@
 import debounce from 'lodash.debounce';
 
 import * as validators from '../validators';
+import * as triggers from './triggers';
 
 export default class Validator {
 
@@ -77,11 +78,13 @@ export default class Validator {
         this.activeValidators.push(validator.create(this.$ref, { value, message }));
     };
 
-    validate = () => {
+    validate = (event, trigger = triggers.CHANGE) => {
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
-            console.log(message, validator.isValid());
+            if (validator[trigger] === false) {
+                return messages;
+            }
 
             return !validator.isValid() && messages.indexOf(message) === -1 && !!message
                 ? messages.concat(message)
@@ -129,7 +132,7 @@ export default class Validator {
      */
     static attachToForm($form, validators) {
         $form.addEventListener('submit', (event) => {
-            const result = validators.map(validator => validator.validate());
+            const result = validators.map(validator => validator.validate(event, triggers.SUBMIT));
             if (result.some(isValid => !isValid)) {
                 event.preventDefault();
             }

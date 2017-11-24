@@ -174,6 +174,8 @@ It receives the following parameters:
 The `create` method ifself returns an object consisting of:
 * `isValid` - a function that returns true, if the input is valid
 * `message` - the validation message
+* `triggerOnChange` - boolean (default: true) that determines, if the validator should validate on change of the input
+* `triggerOnSubmit` - boolean (default: true) that determines, if the validator should validate on form submit
 
 ### Using a custom validator
 Once defined, the custom validator(s) can be passed to either the static
