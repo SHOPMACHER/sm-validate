@@ -133,9 +133,18 @@ export default class Validator {
     static attachToForm($form, validators) {
         $form.addEventListener('submit', (event) => {
             const result = validators.map(validator => validator.validate(event, triggers.SUBMIT));
+
             if (result.some(isValid => !isValid)) {
                 event.preventDefault();
+
+                return;
             }
+
+            $form.dispatchEvent(new CustomEvent('smValidate', {
+                detail: {
+                    isValid: true
+                }
+            }));
         });
     }
 
