@@ -60,6 +60,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "custom-event-polyfill": "^0.3.0",
     "lodash.debounce": "^4.0.8"
   }
 }
