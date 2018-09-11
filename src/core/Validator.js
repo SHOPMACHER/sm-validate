@@ -22,7 +22,8 @@ export default class Validator {
             validateDebounce,
             validateMessageCount,
             validateInvalidMessage,
-            validateErrorElement
+            validateErrorElement,
+            validateHidden
         } = this.$ref.dataset;
 
         this.options = {
@@ -33,7 +34,8 @@ export default class Validator {
                 debounce: validateDebounce ? parseInt(validateDebounce, 10) : 300
             },
             invalidMessage: validateInvalidMessage,
-            messageCount: validateMessageCount
+            messageCount: validateMessageCount,
+            hidden: validateHidden !== undefined ? validateHidden === 'true' : true,
         };
 
         if (validateErrorElement) {
@@ -79,6 +81,11 @@ export default class Validator {
     };
 
     validate = (event, trigger = triggers.CHANGE) => {
+        if (!this.options.hidden && this.$ref.offsetParent === null) {
+            this.$ref.classList.remove('sm-validate-error');
+            return true;
+        }
+
         let messages = this.activeValidators.reduce((messages, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
