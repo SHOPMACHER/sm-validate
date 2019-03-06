@@ -5,3 +5,4 @@ export dataType from './data-type';
 export regex from './regex';
 export checked from './checked';
 export compare from './compare';
+export api from './api';
