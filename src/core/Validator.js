@@ -80,43 +80,66 @@ export default class Validator {
         this.activeValidators.push(validator.create(this.$ref, { value, message }));
     };
 
-    validate = (event, trigger = triggers.CHANGE) => {
+    validate = (event, trigger = triggers.CHANGE) => new Promise(resolve => {
         if (!this.options.hidden && this.$ref.offsetParent === null) {
             this.$ref.classList.remove('sm-validate-error');
-            return true;
+            return resolve(true);
         }
 
-        let messages = this.activeValidators.reduce((messages, validator) => {
+        let validations$ = this.activeValidators.reduce((result, validator) => {
             const message = validator.message || this.options.invalidMessage;
 
             if (validator[trigger] === false) {
-                return messages;
+                return result;
             }
 
-            return !validator.isValid() && messages.indexOf(message) === -1 && !!message
-                ? messages.concat(message)
-                : messages;
+            const isValid = validator.isValid();
+            const resolver = new Promise(resolve => {
+                if (isValid instanceof Promise) {
+                    return isValid.then(v => resolve({
+                        isValid: v,
+                        message,
+                    }));
+                }
+
+                return resolve({
+                    isValid,
+                    message,
+                })
+            });
+
+            return result.concat(resolver);
         }, []);
 
-        const emptyMessageIndex = messages.indexOf(this.options.empty.message);
-        if (emptyMessageIndex > -1) {
-            messages = [messages[emptyMessageIndex]];
-        }
+        return Promise.all(validations$).then(validations => {
+            let messages = validations.reduce((messages, validation) => {
+                const { isValid, message } = validation;
 
-        const isValid = messages.length === 0;
+                return !isValid && messages.indexOf(message) === -1 && !!message
+                    ? messages.concat(message)
+                    : messages;
+            }, []);
 
-        if (!isValid) {
-            this.$ref.classList.add('sm-validate-error');
-        } else {
-            this.$ref.classList.remove('sm-validate-error');
-        }
+            const emptyMessageIndex = messages.indexOf(this.options.empty.message);
+            if (emptyMessageIndex > -1) {
+                messages = [messages[emptyMessageIndex]];
+            }
 
-        if (this.$errorRef) {
-            this.$errorRef.innerHTML = messages.join('<br/>');
-        }
+            const isValid = messages.length === 0;
 
-        return isValid;
-    };
+            if (!isValid) {
+                this.$ref.classList.add('sm-validate-error');
+            } else {
+                this.$ref.classList.remove('sm-validate-error');
+            }
+
+            if (this.$errorRef) {
+                this.$errorRef.innerHTML = messages.join('<br/>');
+            }
+
+            return resolve(isValid);
+        });
+    });
 
     /**
      * Intializes all inputs having the `data-validate` attribute set to `true`.
@@ -139,20 +162,22 @@ export default class Validator {
      */
     static attachToForm($form, validators) {
         $form.addEventListener('submit', (event) => {
-            const result = validators.map(validator => validator.validate(event, triggers.SUBMIT));
+            event.preventDefault();
+            const result$ = validators.map(validator => validator.validate(event, triggers.SUBMIT));
 
-            if (result.some(isValid => !isValid)) {
-                event.preventDefault();
-
-                return;
-            }
-
-            $form.dispatchEvent(new CustomEvent('smValidate', {
-                detail: {
-                    isValid: true
+            Promise.all(result$).then(result => {
+                if (result.some(isValid => !isValid)) {
+                    return;
                 }
-            }));
+
+                $form.dispatchEvent(new CustomEvent('smValidate', {
+                    detail: {
+                        isValid: true
+                    }
+                }));
+
+                $form.submit();
+            });
         });
     }
-
 }

@@ -150,7 +150,20 @@ would be implemented like this:
 const validator = {
     attr: 'hello',
     create: ($input, { value, message }) => ({
-        isValid: () => $input.value === 'Hellow',
+        isValid: () => $input.value === 'Hello',
+        message
+    })
+};
+```
+
+In order to perform validation based on asynchronous results, the `isValid`
+method can return a Promise, as seen in the following example:
+
+```javascript
+const validator = {
+    attr: 'hello',
+    create: ($input, { value, message }) => ({
+        isValid: () => new Promise(resolve => resolve(true)),
         message
     })
 };
@@ -173,7 +186,7 @@ It receives the following parameters:
   * `message` - the validation message (this is mainly used to pass it through)
 
 The `create` method ifself returns an object consisting of:
-* `isValid` - a function that returns true, if the input is valid
+* `isValid` - a function that returns true, if the input is valid or a Promise resolving to true
 * `message` - the validation message
 * `triggerOnChange` - boolean (default: true) that determines, if the validator should validate on change of the input
 * `triggerOnSubmit` - boolean (default: true) that determines, if the validator should validate on form submit
