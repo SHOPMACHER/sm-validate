@@ -85,11 +85,17 @@ init method or the constructor to a form.
 ```javascript
 const $form = document.querySelector('#my-form');
 const validators = Validator.init();
-Validator.attachToForm($form, validators);
+Validator.attachToForm($form, validators, {});
 ```
 
 This will check all validators, when the form is submitted and prevent the
 submit, if one of the validators fails.
+
+Additionally, the third argument of the `attachToForm` method is an options
+object that can be used to configure the behavior of the validation further.
+It can have the following options:
+
+ * `preventSubmit` (boolean, default: false) - prevents the submitting of the form, even if it is valid
 
 ### Configuration
 To validate an input, the library provides a set of basic validators that
