@@ -1,7 +1,15 @@
 language: node_js
 node_js:
-  - "8"
-  - "7"
-  - "6"
-install:
-  - npm install
+  - '10'
+cache:
+  directories:
+    - node_modules
+deploy:
+  provider: npm
+  email: rherwig4711@gmail.com
+  api_key:
+    secure: PW7XBKqB2xj+6glOJ4QDBe/UsbuGoRgV1hacL3T7i/FshvFzt46DCnRF05CX1rIa7Jlf4+9cWRNNuMNKAqwu0sjP3ZyPBN8ecZKs1BF0Mbp7/ho3ukhi08FNuAU9A2JxK7z1hHpEOZXCIu+/4Fpo73sVQ+4L4AkLKUEC9Rk5qju4OugxtSBaO1XpxL4kzcD8SCd5+m1Y6wco8VCZjqaBkwl6o1XLxpYOvzdXs2rLuITc1J/ZFYnKRinkAKEM/AebV7TjuominjvCwDXHqCqPuYxcjfv9u4yRw25wPvg8LzarJLapVX858WS9fW+kJpH98nbKUQ1FSnzmQcwkOySjRIpMq7nuiwrK5nzy/Gx0UFid/nHJGR9E0ERBvNZlJQX652GCXRNNwyv2WMT8+tWXrPi1/pH1WF8BrZ64qpS3nMQHo++749LdZ+ImHpq6ECutJqnaaQtkrHsBU5KyqmtDNKT7fyXxunpEzQy1CeoE5byoq5DQuhPi8o810dSuwphAFKt3vzmm5dT2wGkeGwqkjpOTigjrpzhQRNUgobSnGNzbppi4EOgROqhKcbYyzXkj7R4aY4F59z1VbnuWBHSwiQ04668BGnBSKE83dqgGm34WM8hNdLqQqx+VVoxIhgzGT3vSKuvdzPyt9nmJmTPMlkJIvjG6k6EvHqtLMsFxB/8=
+  on:
+    tags: true
+    repo: SHOPMACHER/sm-validate
+  skip_cleanup: true
