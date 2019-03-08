@@ -12,3 +12,5 @@ deploy:
   on:
     tags: true
     repo: SHOPMACHER/sm-validate
+  skip_cleanup: true
+  
