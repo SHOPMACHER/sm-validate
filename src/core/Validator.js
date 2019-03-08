@@ -159,8 +159,11 @@ export default class Validator {
      *
      * @param $form
      * @param validators
+     * @param options
      */
-    static attachToForm($form, validators) {
+    static attachToForm($form, validators, options = {}) {
+        const { preventSubmit } = options;
+
         $form.addEventListener('submit', (event) => {
             event.preventDefault();
             const result$ = validators.map(validator => validator.validate(event, triggers.SUBMIT));
@@ -176,7 +179,9 @@ export default class Validator {
                     }
                 }));
 
-                $form.submit();
+                if (!preventSubmit) {
+                    $form.submit();
+                }
             });
         });
     }
